@@ -9,9 +9,13 @@ const serve = require('koa-static')
 const path = require('path')
 
 import React from 'react'
+import { configureStore } from '@reduxjs/toolkit'
+import { Provider } from 'react-redux'
 import { renderToString } from "react-dom/server";
+import { matchPath } from 'react-router-dom'
 import { StaticRouter } from 'react-router-dom/server'
 // import Home from "../client/page/home";
+import store from '../client/store/index'
 import AppRoute from '../client/route/index'
 
 const app = new Koa();
@@ -21,10 +25,13 @@ router.get(/.*/, async (ctx, next) => {
   if (ctx.request.url.includes('.js')) {
     await next()
   } else {
+    const preloadedState = store.getState()
     const content = renderToString(
-      <StaticRouter location={ctx.request.url}>
-        <AppRoute />
-      </StaticRouter>
+      <Provider store={store}>
+        <StaticRouter location={ctx.request.url}>
+          <AppRoute />
+        </StaticRouter>
+      </Provider>
     );
     ctx.response.body = `
     <html>
@@ -35,6 +42,12 @@ router.get(/.*/, async (ctx, next) => {
     <body>
       <div id="root">${content}</div>
       <script src="./client/index.js"></script>
+      <script>
+      window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(
+      /</g,
+      '\\u003c'
+    )}
+    </script>
     </body>
     <html>
     `;

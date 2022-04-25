@@ -7,7 +7,7 @@ export default function Index() {
   let element = useRoutes([
     {
       path: '/',
-      element: <Home />
+      element: <Home />,
       loadData: getInitialProps,
     },
     {
