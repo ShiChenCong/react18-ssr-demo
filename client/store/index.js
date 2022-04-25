@@ -1,16 +1,24 @@
-// import { createStore } from 'redux'
-import { configureStore, createSlice } from '@reduxjs/toolkit'
+import { configureStore, createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+const getImgUrl = createAsyncThunk(
+  'counter/getImgUrl',
+  async () => {
+    console.log('执行了接口请求')
+    const { message } = await fetch('https://dog.ceo/api/breeds/image/random', { mode: 'cors' }).then(res => res.json())
+    return message
+  }
+)
 const counterSlice = createSlice({
   name: 'counter',
   initialState: {
     value: 0,
     url: ''
   },
+  extraReducers: (builder) => {
+    builder.addCase(getImgUrl.fulfilled, (state, action) => {
+      state.url = action.payload
+    })
+  },
   reducers: {
-    getImgUrl: async (state) => {
-      const { message } = await fetch('https://dog.ceo/api/breeds/image/random', { mode: 'cors' }).then(res => res.json())
-      state.url = message
-    },
     incremented: state => {
       state.value += 1
     },
@@ -19,25 +27,14 @@ const counterSlice = createSlice({
     }
   }
 })
-// function counterReducer(state = { value: 0 }, action) {
-//   switch (action.type) {
-//     case 'counter/incremented':
-//       return { value: state.value + 1 }
-//     case 'counter/decremented':
-//       return { value: state.value - 1 }
-//     default:
-//       return state
-//   }
-// }
-// global.window = {};
-const store = global ?  configureStore({
+
+const store = global ? configureStore({
   reducer: counterSlice.reducer,
 }) : configureStore({
   reducer: counterSlice.reducer,
   preloadedState: window.__PRELOADED_STATE__
 })
 
-// const store = createStore(counterReducer, window.__PRELOADED_STATE__)
-export const { getImgUrl } = counterSlice.actions
+export { getImgUrl }
 
 export default store

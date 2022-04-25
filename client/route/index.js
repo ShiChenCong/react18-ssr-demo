@@ -3,18 +3,20 @@ import { Route, Routes, useRoutes } from 'react-router-dom'
 import Home, { getInitialProps } from '../page/home'
 import Login from '../page/login'
 
+const config = [
+  {
+    path: '/',
+    element: <Home />,
+    loadData: getInitialProps,
+  },
+  {
+    path: '/login',
+    element: <Login />
+  }
+]
+
 export default function Index() {
-  let element = useRoutes([
-    {
-      path: '/',
-      element: <Home />,
-      loadData: getInitialProps,
-    },
-    {
-      path: '/login',
-      element: <Login />
-    }
-  ])
+  let element = useRoutes(config)
   return element
   // return (
   //   <Routes>
@@ -23,3 +25,4 @@ export default function Index() {
   //   </Routes>
   // )
 }
+export { config as routeConfig }

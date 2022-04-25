@@ -16,7 +16,7 @@ import { matchPath } from 'react-router-dom'
 import { StaticRouter } from 'react-router-dom/server'
 // import Home from "../client/page/home";
 import store from '../client/store/index'
-import AppRoute from '../client/route/index'
+import AppRoute, { routeConfig } from '../client/route/index'
 
 const app = new Koa();
 const router = new Router()
@@ -25,7 +25,15 @@ router.get(/.*/, async (ctx, next) => {
   if (ctx.request.url.includes('.js')) {
     await next()
   } else {
+    const promises = []
+    const activeRoute = routeConfig.forEach(route => {
+      if (route.path === ctx.request.url) {
+        promises.push(route.loadData(store))
+      }
+    })
+    await promises[0]
     const preloadedState = store.getState()
+    console.log('请求完之后的数据', preloadedState)
     const content = renderToString(
       <Provider store={store}>
         <StaticRouter location={ctx.request.url}>
