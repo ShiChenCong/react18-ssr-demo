@@ -24,3 +24,10 @@ export default function Home(props) {
     </div>
   )
 }
+
+export async function getInitialProps(){
+  const { message } = await fetch('https://dog.ceo/api/breeds/image/random', { mode: 'cors' }).then(res => res.json())
+  return {
+    props: message
+  }
+}
