@@ -1,19 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { getImgUrl } from '../store/index'
 
-export default function Home(props) {
+export default function Home() {
   const dispatch = useDispatch()
-  // const [imageUrl, setImageUrl] = useState()
-  // useEffect(() => {
-  //   const fn = async () => {
-  //     const { message } = await fetch('https://dog.ceo/api/breeds/image/random', { mode: 'cors' }).then(res => res.json())
-  //     setImageUrl(message)
-  //   }
-  //   fn()
-  // }, [])
-
+  const state = useSelector(state => state)
 
   return (
     <div
@@ -23,7 +15,7 @@ export default function Home(props) {
         dispatch(getImgUrl())
       }}>
       this is React App render in server
-      {/* <img src={imageUrl} alt="scc"></img> */}
+      <img src={state.url} alt="scc"></img>
       <Link to='/login'>go</Link>
     </div>
   )
