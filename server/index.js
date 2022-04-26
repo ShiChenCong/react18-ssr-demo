@@ -1,18 +1,11 @@
-// import Koa from "koa";
-// import Router from '@koa/router'
-// import serve from 'koa-static';
-// import path from 'path'
-
-const Koa = require('koa')
-const Router = require('@koa/router')
-const serve = require('koa-static')
-const path = require('path')
+import Koa from "koa";
+import Router from '@koa/router'
+import serve from 'koa-static';
+import path from 'path'
 
 import React from 'react'
-import { configureStore } from '@reduxjs/toolkit'
 import { Provider } from 'react-redux'
 import { renderToString } from "react-dom/server";
-import { matchPath } from 'react-router-dom'
 import { StaticRouter } from 'react-router-dom/server'
 import { getServerStore } from '../client/store/index'
 import AppRoute, { routeConfig } from '../client/route/index'
@@ -31,7 +24,7 @@ router.get(/.*/, async (ctx, next) => {
         promises.push(route.loadData(store))
       }
     })
-    await promises[0]
+    await Promise.all(promises)
     const preloadedState = store.getState()
     const content = renderToString(
       <Provider store={store}>
