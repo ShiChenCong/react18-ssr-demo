@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getImgUrl } from "../store/index";
+import "./home.css";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -15,7 +16,7 @@ export default function Home() {
       }}
     >
       this is React App render in server
-      <img src={state.url} alt="scc"></img>
+      {/* <img src={state.url} alt="scc"></img> */}
       <div>{state.url}</div>
       <Link to="/login">go</Link>
     </div>
