@@ -58,7 +58,6 @@ router.get(/.*/, async (ctx, next) => {
           "\\u003c"
         )}
 			</script>
-			<script src="./client/index.js"></script>
 		</body>
 		<html>
     `;
