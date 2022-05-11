@@ -1,7 +1,7 @@
 import Koa from "koa";
 import Router from "@koa/router";
 import serve from "koa-static";
-import path from "path";
+import path, { resolve } from "path";
 
 import React, { createElement } from "react";
 import { Provider } from "react-redux";
@@ -22,13 +22,13 @@ router.get(/.*/, async (ctx, next) => {
     await next();
   } else {
     const promises = [];
-    routeConfig.forEach((route) => {
+    routeConfig.forEach(async (route) => {
       if (route.path === ctx.request.url) {
-        route.Component.load().then((a) => {
-          a.default.loadData(store)
-        })
+        const a = await route.Component.load()
+        promises.push(a.default?.loadData(store))
       }
     });
+    console.log('promise.all', promises.length)
     if (promises.length > 0) {
       await Promise.all(promises);
     }
