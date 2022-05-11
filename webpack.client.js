@@ -1,11 +1,14 @@
 const path = require("path");
 const webpack = require("webpack");
+const LoadablePlugin = require('@loadable/webpack-plugin')
 
 module.exports = {
   entry: "./client/index.js",
   output: {
+    publicPath: './client/',
     filename: "index.js",
     path: path.resolve(__dirname, "build", "client"),
+    globalObject: `typeof self !== 'undefined' ? self : this`
   },
   mode: "development",
   module: {
@@ -36,6 +39,7 @@ module.exports = {
     ],
   },
   plugins: [
+    new LoadablePlugin({ filename: 'stats.json', writeToDisk: true })
     // new webpack.ProvidePlugin({
     //   isRenderOnBrowser: "true",
     // }),

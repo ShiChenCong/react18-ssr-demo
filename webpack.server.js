@@ -1,12 +1,16 @@
 const path = require("path");
 const webpack = require("webpack");
 const nodeExternals = require("webpack-node-externals");
+// const LoadablePlugin = require('@loadable/webpack-plugin')
 
 module.exports = {
   entry: "./server/index.js",
+  target: "node",
   output: {
+    publicPath: './',
     filename: "bundle.js",
     path: path.resolve(__dirname, "build", "server"),
+    globalObject: `typeof self !== 'undefined' ? self : this`
   },
   mode: "development",
   externals: [nodeExternals()],
@@ -43,6 +47,7 @@ module.exports = {
     ],
   },
   plugins: [
+    // new LoadablePlugin({ filename: 'stats.json', writeToDisk: true })
     // new webpack.ProvidePlugin({
     //   isRenderOnBrowser: "false",
     // }),
