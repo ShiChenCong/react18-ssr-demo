@@ -26,6 +26,6 @@ export default function Home() {
 }
 
 Home.loadData = (store) => {
-  // console.log('在服务端执行了getInitialProps', store.dispatch)
+  console.log('在服务端执行了getInitialProps', store.dispatch)
   return store.dispatch(getImgUrl());
 }

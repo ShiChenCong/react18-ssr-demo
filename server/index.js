@@ -3,7 +3,7 @@ import Router from "@koa/router";
 import serve from "koa-static";
 import path from "path";
 
-import React from "react";
+import React, { createElement } from "react";
 import { Provider } from "react-redux";
 import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
@@ -23,8 +23,10 @@ router.get(/.*/, async (ctx, next) => {
   } else {
     const promises = [];
     routeConfig.forEach((route) => {
-      if (route.path === ctx.request.url && route.loadData) {
-        promises.push(route.loadData(store));
+      if (route.path === ctx.request.url) {
+        route.Component.load().then((a) => {
+          a.default.loadData(store)
+        })
       }
     });
     if (promises.length > 0) {

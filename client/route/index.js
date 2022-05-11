@@ -10,17 +10,22 @@ const Login = loadable(() => import('../page/Login'))
 const config = [
   {
     path: "/",
-    element: <Home />,
+    Component: Home,
     // loadData: getInitialProps,
   },
   {
     path: "/login",
-    element: <Login />,
+    Component: Login,
   },
 ];
 
 export default function Index() {
-  let element = useRoutes(config);
+  const handledConfig = config.map(i => {
+    const { Component } = i
+    i.element = <Component />
+    return i
+  })
+  let element = useRoutes(handledConfig);
   return element;
 }
 
