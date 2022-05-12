@@ -3,12 +3,14 @@ import {
   createSlice,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
+
 const getImgUrl = createAsyncThunk("counter/getImgUrl", async () => {
   const { message } = await fetch("https://dog.ceo/api/breeds/image/random", {
     mode: "cors",
   }).then((res) => res.json());
   return message;
 });
+
 const counterSlice = createSlice({
   name: "counter",
   initialState: {

@@ -1,9 +1,9 @@
 import Koa from "koa";
 import Router from "@koa/router";
 import serve from "koa-static";
-import path, { resolve } from "path";
+import path from "path";
 
-import React, { createElement } from "react";
+import React from "react";
 import { Provider } from "react-redux";
 import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
@@ -22,13 +22,15 @@ router.get(/.*/, async (ctx, next) => {
     await next();
   } else {
     const promises = [];
-    routeConfig.forEach(async (route) => {
+    for (let i = 0; i < routeConfig.length; i++) {
+      const route = routeConfig[i]
       if (route.path === ctx.request.url) {
-        const a = await route.Component.load()
-        promises.push(a.default?.loadData(store))
+        const loadedComponent = await route.Component.load()
+        if (loadedComponent.default?.loadData) {
+          promises.push(loadedComponent.default.loadData(store))
+        }
       }
-    });
-    console.log('promise.all', promises.length)
+    }
     if (promises.length > 0) {
       await Promise.all(promises);
     }
@@ -38,7 +40,7 @@ router.get(/.*/, async (ctx, next) => {
     const insertCss = (...styles) =>
       styles.forEach((style) => css.add(style._getCss()));
 
-    const content = renderToString(
+    renderToString(
       extractor.collectChunks(<StyleContext.Provider value={{ insertCss }}>
         <Provider store={store}>
           <StaticRouter location={ctx.request.url}>
@@ -56,6 +58,7 @@ router.get(/.*/, async (ctx, next) => {
 		<html>
 		<head>
 			<title>ssr</title>
+      <link rel="shortcut icon" href="#"/>
       ${renderedLinkTags}
       ${renderedStyleTags}
 		</head>
