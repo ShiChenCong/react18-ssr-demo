@@ -7,7 +7,7 @@ module.exports = {
   target: 'node',
   cache: {
     type: 'filesystem',
-    cacheDirectory: path.resolve(__dirname, '.temp_cache'),
+    // cacheDirectory: path.resolve(__dirname, '.temp_cache'),
   },
   output: {
     publicPath: './',

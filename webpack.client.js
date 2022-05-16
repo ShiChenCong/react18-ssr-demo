@@ -4,7 +4,7 @@ module.exports = {
   entry: './client/index.js',
   cache: {
     type: 'filesystem',
-    cacheDirectory: path.resolve(__dirname, '.temp_cache'),
+    // cacheDirectory: path.resolve(__dirname, '.temp_cache'),
   },
   output: {
     publicPath: './client/',

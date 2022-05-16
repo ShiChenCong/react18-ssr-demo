@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { useRoutes } from 'react-router-dom';
 import { loadData } from '../page/home/fetch';
 import Html from '../html';
+import Spinner from '../component/spin';
 
 const Home = lazy(() => import('../page/home'));
 const Login = lazy(() => import('../page/login'));
@@ -17,11 +18,6 @@ const config = [
     Component: Login,
   },
 ];
-
-function Spinner() {
-  console.log('this is Spinner');
-  return <div>this is Spinner</div>;
-}
 
 export default function Index({ assest }) {
   const handledConfig = config.map((i) => {
