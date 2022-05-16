@@ -5,6 +5,10 @@ const nodeExternals = require('webpack-node-externals');
 module.exports = {
   entry: './server/index.js',
   target: 'node',
+  cache: {
+    type: 'filesystem',
+    cacheDirectory: path.resolve(__dirname, '.temp_cache'),
+  },
   output: {
     publicPath: './',
     filename: 'bundle.js',

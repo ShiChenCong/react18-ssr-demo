@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import useStyles from 'isomorphic-style-loader/useStyles';
-import { getImgUrl } from '../store/index';
-import style from './home.css';
+import { getImgUrl } from '../../store/index';
+import style from './index.css';
 
 export default function Home() {
   useStyles(style);

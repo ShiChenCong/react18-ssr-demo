@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { useRoutes } from 'react-router-dom';
-import { loadData } from '../page/fetch';
+import { loadData } from '../page/home/fetch';
 import Html from '../html';
 
 const Home = lazy(() => import('../page/home'));

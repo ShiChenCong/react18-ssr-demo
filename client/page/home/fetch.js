@@ -1,4 +1,4 @@
-import { getImgUrl } from '../store/index';
+import { getImgUrl } from '../../store/index';
 
 // eslint-disable-next-line import/prefer-default-export
 export const loadData = async (store) => {
