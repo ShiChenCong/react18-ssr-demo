@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import useStyles from 'isomorphic-style-loader/useStyles'
-import { getImgUrl } from "../store/index";
-import style from "./home.css";
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import useStyles from 'isomorphic-style-loader/useStyles';
+import { getImgUrl } from '../store/index';
+import style from './home.css';
 
 export default function Home() {
-  useStyles(style)
+  useStyles(style);
   const dispatch = useDispatch();
-  const state = useSelector((state) => state);
+  const state = useSelector((globalState) => globalState);
 
   return (
     <div
       className={style.home}
       onClick={() => {
-        // dispatch(getImgUrl());
-        console.log('this is home')
+        dispatch(getImgUrl());
       }}
     >
       this is React App render in server
@@ -24,9 +24,4 @@ export default function Home() {
       <Link to="/login">go</Link>
     </div>
   );
-}
-
-Home.loadData = async (store) => {
-  console.log('在服务端执行了getInitialProps', store.dispatch)
-  return store.dispatch(getImgUrl());
 }

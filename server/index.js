@@ -19,7 +19,6 @@ const store = getServerStore();
 
 const assets = {
   'main.js': '/client/index.js',
-  'main.css': '/client/main.css',
 };
 
 router.get(/.*/, async (ctx, next) => {
@@ -29,12 +28,8 @@ router.get(/.*/, async (ctx, next) => {
     const promises = [];
     for (let i = 0; i < routeConfig.length; i++) {
       const route = routeConfig[i];
-      if (route.path === ctx.request.url) {
-        // eslint-disable-next-line no-await-in-loop
-        // const loadedComponent = await route.Component.load();
-        // if (loadedComponent.default?.loadData) {
-        //   promises.push(loadedComponent.default.loadData(store));
-        // }
+      if (route.path === ctx.request.url && route.loadData) {
+        promises.push(route.loadData(store));
       }
     }
     if (promises.length > 0) {
@@ -60,24 +55,13 @@ router.get(/.*/, async (ctx, next) => {
           ctx.set('Content-type', 'text/html');
 
           stream.pipe(ctx.res);
-
-        //   ctx.response.body = `
-        // <html>
-        // <head>
-        //   <title>ssr</title>
-        //   <link rel="shortcut icon" href="#"/>
-        // </head>
-        // <body>
-        //   <div id="root"></div>
-        //   <script>
-        //   window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\u003c')}
-        //   </script>
-        // </body>
-        // <html>
-        // `;
+          ctx.res.write(`
+            <script>
+             window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\u003c')}
+            </script>
+            `);
         },
         onShellError(error) {
-          // Something errored before we could complete the shell so we emit an alternative shell.
           ctx.response.status = 500;
           ctx.response.body = `onShellError: ${error}`;
         },

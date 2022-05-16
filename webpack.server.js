@@ -11,7 +11,7 @@ module.exports = {
     path: path.resolve(__dirname, 'build', 'server'),
     globalObject: 'typeof self !== \'undefined\' ? self : this',
   },
-  mode: 'development',
+  mode: 'production',
   externals: [nodeExternals()],
   resolve: {
     fallback: {

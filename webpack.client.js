@@ -8,7 +8,7 @@ module.exports = {
     path: path.resolve(__dirname, 'build', 'client'),
     globalObject: 'typeof self !== \'undefined\' ? self : this',
   },
-  mode: 'development',
+  mode: 'production',
   module: {
     rules: [
       {

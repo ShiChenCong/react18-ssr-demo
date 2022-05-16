@@ -1,27 +1,26 @@
-import React, { lazy, Suspense } from "react";
-import { useRoutes } from "react-router-dom";
-// import Home, { getInitialProps } from "../page/home";
-// import Login from "../page/login";
-import Html from "../html";
+import React, { lazy, Suspense } from 'react';
+import { useRoutes } from 'react-router-dom';
+import { loadData } from '../page/fetch';
+import Html from '../html';
 
-const Home = lazy(() => import("../page/home"));
-const Login = lazy(() => import("../page/login"));
+const Home = lazy(() => import('../page/home'));
+const Login = lazy(() => import('../page/login'));
 
 const config = [
   {
-    path: "/",
+    path: '/',
     Component: Home,
-    // loadData: getInitialProps,
+    loadData,
   },
   {
-    path: "/login",
+    path: '/login',
     Component: Login,
   },
 ];
 
-function Spinner(){
-  console.log('this is Spinner')
-  return <div>this is Spinner</div>
+function Spinner() {
+  console.log('this is Spinner');
+  return <div>this is Spinner</div>;
 }
 
 export default function Index({ assest }) {
