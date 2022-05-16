@@ -13,6 +13,7 @@ module.exports = {
     'no-underscore-dangle': 'off',
     'react/jsx-filename-extension': 'off',
     'react/jsx-no-constructed-context-values': 'off',
-    "no-tabs": 'off',
+    'no-tabs': 'off',
+    'no-param-reassign': 'off',
   },
 };

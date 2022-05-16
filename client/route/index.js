@@ -1,11 +1,11 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { useRoutes } from "react-router-dom";
 // import Home, { getInitialProps } from "../page/home";
 // import Login from "../page/login";
-import loadable from '@loadable/component'
+import Html from "../html";
 
-const Home = loadable(() => import('../page/home'))
-const Login = loadable(() => import('../page/Login'))
+const Home = lazy(() => import("../page/home"));
+const Login = lazy(() => import("../page/login"));
 
 const config = [
   {
@@ -19,14 +19,23 @@ const config = [
   },
 ];
 
-export default function Index() {
-  const handledConfig = config.map(i => {
-    const { Component } = i
-    i.element = <Component />
-    return i
-  })
-  let element = useRoutes(handledConfig);
-  return element;
+function Spinner(){
+  console.log('this is Spinner')
+  return <div>this is Spinner</div>
+}
+
+export default function Index({ assest }) {
+  const handledConfig = config.map((i) => {
+    const { Component } = i;
+    i.element = <Component />;
+    return i;
+  });
+  const element = useRoutes(handledConfig);
+  return (
+    <Html assets={assest}>
+      <Suspense fallback={<Spinner />}>{element}</Suspense>
+    </Html>
+  );
 }
 
 export { config as routeConfig };

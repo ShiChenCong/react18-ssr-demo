@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import StyleContext from "isomorphic-style-loader/StyleContext";
 
-import Router from "./route/index";
+import AppRoute from "./route/index";
 import { getClientStore } from "./store/index";
 
 const insertCss = (...styles) => {
@@ -12,19 +12,20 @@ const insertCss = (...styles) => {
   return () => removeCss.forEach((dispose) => dispose());
 };
 
-const App = () => {
+const App = ({assets}) => {
   const store = getClientStore();
   return (
     <StyleContext.Provider value={{ insertCss }}>
       <Provider store={store}>
         <BrowserRouter>
-          <Router />
+          <AppRoute assest={assets} />
         </BrowserRouter>
       </Provider>
     </StyleContext.Provider>
   );
 };
 
-const container = document.getElementById("root");
+// const container = document.getElementById("root");
+const container = document;
 console.log("执行hydrateRoot");
-hydrateRoot(container, <App />);
+hydrateRoot(container, <App assets={window.assetManifest} />);

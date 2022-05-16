@@ -14,7 +14,8 @@ export default function Home() {
     <div
       className={style.home}
       onClick={() => {
-        dispatch(getImgUrl());
+        // dispatch(getImgUrl());
+        console.log('this is home')
       }}
     >
       this is React App render in server
