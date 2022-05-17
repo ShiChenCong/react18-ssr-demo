@@ -1,23 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useData } from '../../context';
 
-export default function Child() {
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    const fn = async () => {
-      const res = await new Promise((r) => {
-        setTimeout(() => {
-          r([1, 2, 3]);
-        }, 4000);
-      });
-
-      setData(res);
-    };
-    fn();
-  }, []);
-
+export default function Comments() {
+  console.log('进入Comment组件');
+  const comments = useData();
   return (
     <>
-      {data.map((i, key) => <i key={key}>{i}</i>)}
+      {comments.map((comment, i) => (
+        <p className="comment" key={i}>
+          {comment}
+        </p>
+      ))}
     </>
   );
 }
