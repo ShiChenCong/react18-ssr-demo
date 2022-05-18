@@ -39,7 +39,7 @@ function createServerData() {
           done = true;
           suspender = null;
           resolve();
-        }, 4000);
+        }, 2000);
       });
       throw suspender;
     },
@@ -58,7 +58,7 @@ app.use((req, res, next) => {
   if (req.url.endsWith('.js')) {
     // Artificially delay serving JS
     // to demonstrate streaming HTML.
-    setTimeout(next, 6000);
+    setTimeout(next, 2000);
   } else {
     next();
   }
