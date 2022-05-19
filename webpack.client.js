@@ -18,6 +18,18 @@ module.exports = {
     globalObject: 'typeof self !== \'undefined\' ? self : this',
   },
   mode: 'development',
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        styles: {
+          name: 'styles',
+          type: 'css/mini-extract',
+          chunks: 'all',
+          enforce: true,
+        },
+      },
+    },
+  },
   module: {
     rules: [
       {
@@ -40,8 +52,8 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'static/css/[name]-[contenthash:8].css',
-      chunkFilename: 'static/css/[name]-[contenthash:8].chunk.css',
+      // filename: 'static/css/style.css',
+      // chunkFilename: 'static/css/[name]-[contenthash:8].chunk.css',
     }),
     new WebpackManifestPlugin({
       writeToFileEmit: true,

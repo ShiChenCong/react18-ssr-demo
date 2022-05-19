@@ -1,27 +1,25 @@
-// import Koa from 'koa';
 import express from 'express';
-// import Router from '@koa/router';
-// import serve from 'koa-static';
-import path from 'path';
 
 import React from 'react';
 import { Provider } from 'react-redux';
 import { renderToPipeableStream } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
-// eslint-disable-next-line import/no-extraneous-dependencies
-// import StyleContext from 'isomorphic-style-loader/StyleContext';
 import { DataProvider } from '../client/context';
 
 import { getServerStore } from '../client/store/index';
-import AppRoute, { routeConfig } from '../client/route/index';
+import AppRoute from '../client/route/index';
 
+const routeConfig = AppRoute.config;
 const app = express();
-// const router = new Router();
 const store = getServerStore();
 
 const assets = {
   'main.js': '/client/index.js',
+  'main.css': '/client/styles.css',
 };
+const PROMISEDELAY = 2000;
+const JS_DELAY = 3000;
+
 function createServerData() {
   let done = false;
   let suspender = null;
@@ -39,96 +37,75 @@ function createServerData() {
           done = true;
           suspender = null;
           resolve();
-        }, 2000);
+        }, PROMISEDELAY);
       });
+      //  throw Promise can cause Suspense
       throw suspender;
     },
   };
 }
-// app.use((ctx, res, next) => {
-//   if (ctx.request.url.includes('.js') || ctx.request.url.includes('.css')) {
-//     // Artificially delay serving JS
-//     // to demonstrate streaming HTML.
-//     setTimeout(next, 6000);
-//   } else {
-//     next();
-//   }
-// });
+
 app.use((req, res, next) => {
   if (req.url.endsWith('.js')) {
-    // Artificially delay serving JS
-    // to demonstrate streaming HTML.
-    setTimeout(next, 2000);
+    setTimeout(next, JS_DELAY);
   } else {
     next();
   }
 });
-app.get('/', async (req, res) => {
-  // const promises = [];
-  // for (let i = 0; i < routeConfig.length; i++) {
-  //   const route = routeConfig[i];
-  //   if (route.path === ctx.request.url && route.loadData) {
-  //     promises.push(route.loadData(store));
-  //   }
-  // }
-  // if (promises.length > 0) {
-  //   await Promise.all(promises);
-  // }
-  // const preloadedState = store.getState();
 
-  // const css = new Set();
-  // const insertCss = (...styles) => styles.forEach((style) => css.add(style._getCss()));
-  const data = createServerData();
-  let fail = false;
-  console.log('start renderToPipeableStream');
-  const stream = renderToPipeableStream(
-    <DataProvider data={data}>
-      {/* <StyleContext.Provider value={{ insertCss }}> */}
-      <Provider store={store}>
-        <StaticRouter location={req.url}>
-          <AppRoute assest={assets} />
-        </StaticRouter>
-      </Provider>
-      {/* </StyleContext.Provider> */}
-    </DataProvider>,
-    {
-      bootstrapScripts: [assets['main.js']],
-      onShellReady() {
-        console.log('onShellReady');
-        if (fail) return;
-        res.statusCode = 200;
-        res.setHeader('Content-type', 'text/html');
-        // res.send('sfd');
-        stream.pipe(res);
-        // ctx.res.write(`
-        //     <script>
-        //      window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\u003c')}
-        //     </script>
-        //     `);
+app.get('*', async (req, res, next) => {
+  console.log('get into express');
+  if (req.url.endsWith('.js') || req.url.endsWith('.css')) {
+    next();
+  } else {
+    const promises = [];
+    for (let i = 0; i < routeConfig.length; i++) {
+      const route = routeConfig[i];
+      if (route.path === req.url && route.loadData) {
+        promises.push(route.loadData(store));
+      }
+    }
+    if (promises.length > 0) {
+      await Promise.all(promises);
+    }
+    const preloadedState = store.getState();
+
+    const data = createServerData();
+    let fail = false;
+    const stream = renderToPipeableStream(
+      <DataProvider data={data}>
+        <Provider store={store}>
+          <StaticRouter location={req.url}>
+            <AppRoute assest={assets} store={preloadedState} />
+          </StaticRouter>
+        </Provider>
+      </DataProvider>,
+      {
+        bootstrapScripts: [assets['main.js']],
+        onShellReady() {
+          console.log('onShellReady');
+          if (fail) return;
+          res.statusCode = 200;
+          res.setHeader('Content-type', 'text/html');
+          stream.pipe(res);
+        },
+        onShellError(error) {
+          fail = true;
+          res.statusCode = 500;
+          console.log(`onShellError: ${error}`);
+          res.end();
+        },
+        onError(error) {
+          fail = true;
+          res.statusCode = 500;
+          console.log(`onError: ${error}`);
+          res.end();
+        },
       },
-      onShellError(error) {
-        fail = true;
-        console.log(`onShellError: ${error}`);
-        // res.send(`onShellError: ${error}`);
-        // res.send(`onShellError: ${error}`);
-        // ctx.response.status = 500;
-        // ctx.response.body = `onShellError: ${error}`;
-      },
-      onError(error) {
-        fail = true;
-        console.log(`onError: ${error}`);
-        // res.send(`onError: ${error}`);
-        // res.send(`onError: ${error}`);
-        // ctx.response.status = 500;
-        // ctx.response.body = `onError: ${error}`;
-      },
-    },
-  );
+    );
+  }
 });
 
-// const staticPath = path.resolve('./build');
-// app.use(router.routes()).use(router.allowedMethods()).use(serve(staticPath));
-// app.use(express.static(staticPath));
 app.use(express.static('build'));
 
 app.listen(3000);

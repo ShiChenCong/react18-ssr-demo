@@ -19,7 +19,7 @@ const config = [
   },
 ];
 
-export default function Index({ assest }) {
+export default function Index({ assest, store }) {
   const handledConfig = config.map((i) => {
     const { Component } = i;
     i.element = <Component />;
@@ -27,10 +27,12 @@ export default function Index({ assest }) {
   });
   const element = useRoutes(handledConfig);
   return (
-    <Html assets={assest}>
+    <Html assets={assest} store={store}>
       <Suspense fallback={<Spinner />}>{element}</Suspense>
     </Html>
   );
 }
 
-export { config as routeConfig };
+Index.config = config;
+
+// export { config as routeConfig };

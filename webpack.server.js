@@ -36,6 +36,18 @@ module.exports = {
       path: require.resolve('path-browserify'),
     },
   },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        styles: {
+          name: 'styles',
+          type: 'css/mini-extract',
+          chunks: 'all',
+          enforce: true,
+        },
+      },
+    },
+  },
   module: {
     rules: [
       {

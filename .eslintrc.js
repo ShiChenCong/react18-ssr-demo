@@ -20,5 +20,6 @@ module.exports = {
     'jsx-a11y/no-static-element-interactions': 'off',
     'react/no-danger': 'off',
     'react/no-array-index-key': 'off',
+    'react/react-in-jsx-scope': 'off',
   },
 };
