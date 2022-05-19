@@ -1,4 +1,5 @@
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: './client/index.js',
@@ -12,7 +13,7 @@ module.exports = {
     path: path.resolve(__dirname, 'build', 'client'),
     globalObject: 'typeof self !== \'undefined\' ? self : this',
   },
-  mode: 'production',
+  mode: 'development',
   module: {
     rules: [
       {
@@ -24,22 +25,19 @@ module.exports = {
         },
       },
       {
-        test: /\.css$/,
+        test: /\.css/,
         use: [
-          'isomorphic-style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1,
-              esModule: false,
-              modules: true,
-            },
-          },
+          MiniCssExtractPlugin.loader,
+          'css-loader',
           'postcss-loader',
         ],
       },
     ],
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'static/css/[name]-[contenthash:8].css',
+      chunkFilename: 'static/css/[name]-[contenthash:8].chunk.css',
+    }),
   ],
 };

@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
 import { renderToPipeableStream } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import StyleContext from 'isomorphic-style-loader/StyleContext';
+// import StyleContext from 'isomorphic-style-loader/StyleContext';
 import { DataProvider } from '../client/context';
 
 import { getServerStore } from '../client/store/index';
@@ -76,25 +76,29 @@ app.get('/', async (req, res) => {
   // }
   // const preloadedState = store.getState();
 
-  const css = new Set();
-  const insertCss = (...styles) => styles.forEach((style) => css.add(style._getCss()));
+  // const css = new Set();
+  // const insertCss = (...styles) => styles.forEach((style) => css.add(style._getCss()));
   const data = createServerData();
-
+  let fail = false;
+  console.log('start renderToPipeableStream');
   const stream = renderToPipeableStream(
     <DataProvider data={data}>
-      <StyleContext.Provider value={{ insertCss }}>
-        <Provider store={store}>
-          <StaticRouter location={req.url}>
-            <AppRoute assest={assets} />
-          </StaticRouter>
-        </Provider>
-      </StyleContext.Provider>
+      {/* <StyleContext.Provider value={{ insertCss }}> */}
+      <Provider store={store}>
+        <StaticRouter location={req.url}>
+          <AppRoute assest={assets} />
+        </StaticRouter>
+      </Provider>
+      {/* </StyleContext.Provider> */}
     </DataProvider>,
     {
       bootstrapScripts: [assets['main.js']],
       onShellReady() {
+        console.log('onShellReady');
+        if (fail) return;
         res.statusCode = 200;
         res.setHeader('Content-type', 'text/html');
+        // res.send('sfd');
         stream.pipe(res);
         // ctx.res.write(`
         //     <script>
@@ -103,10 +107,18 @@ app.get('/', async (req, res) => {
         //     `);
       },
       onShellError(error) {
+        fail = true;
+        console.log(`onShellError: ${error}`);
+        // res.send(`onShellError: ${error}`);
+        // res.send(`onShellError: ${error}`);
         // ctx.response.status = 500;
         // ctx.response.body = `onShellError: ${error}`;
       },
       onError(error) {
+        fail = true;
+        console.log(`onError: ${error}`);
+        // res.send(`onError: ${error}`);
+        // res.send(`onError: ${error}`);
         // ctx.response.status = 500;
         // ctx.response.body = `onError: ${error}`;
       },

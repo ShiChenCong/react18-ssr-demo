@@ -1,6 +1,7 @@
 const path = require('path');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const nodeExternals = require('webpack-node-externals');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: './server/index.js',
@@ -15,7 +16,19 @@ module.exports = {
     path: path.resolve(__dirname, 'build', 'server'),
     globalObject: 'typeof self !== \'undefined\' ? self : this',
   },
-  mode: 'production',
+  // optimization: {
+  //   splitChunks: {
+  //     cacheGroups: {
+  //       vendor: {
+  //         chunks: 'initial',
+  //         name: 'vendor',
+  //         test: (module) => /node_modules/.test(module.resource),
+  //         enforce: true,
+  //       },
+  //     },
+  //   },
+  // },
+  mode: 'development',
   externals: [nodeExternals()],
   resolve: {
     fallback: {
@@ -35,20 +48,22 @@ module.exports = {
       {
         test: /\.css/,
         use: [
-          'isomorphic-style-loader',
           {
-            loader: 'css-loader',
+            loader: MiniCssExtractPlugin.loader,
             options: {
-              importLoaders: 1,
-              esModule: false,
-              modules: true,
+              emit: false,
             },
           },
+          'css-loader',
           'postcss-loader',
         ],
       },
     ],
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'static/css/[name]-[contenthash:8].css',
+      chunkFilename: 'static/css/[name]-[contenthash:8].chunk.css',
+    }),
   ],
 };

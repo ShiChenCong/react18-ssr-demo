@@ -3,26 +3,26 @@ import { hydrateRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import StyleContext from 'isomorphic-style-loader/StyleContext';
+// import StyleContext from 'isomorphic-style-loader/StyleContext';
 
 import AppRoute from './route/index';
 import { getClientStore } from './store/index';
 
-const insertCss = (...styles) => {
-  const removeCss = styles.map((style) => style?._insertCss());
-  return () => removeCss.forEach((dispose) => dispose());
-};
+// const insertCss = (...styles) => {
+//   const removeCss = styles.map((style) => style?._insertCss());
+//   return () => removeCss.forEach((dispose) => dispose());
+// };
 
 function App({ assets }) {
   const store = getClientStore();
   return (
-    <StyleContext.Provider value={{ insertCss }}>
-      <Provider store={store}>
-        <BrowserRouter>
-          <AppRoute assest={assets} />
-        </BrowserRouter>
-      </Provider>
-    </StyleContext.Provider>
+  // <StyleContext.Provider value={{ insertCss }}>
+    <Provider store={store}>
+      <BrowserRouter>
+        <AppRoute assest={assets} />
+      </BrowserRouter>
+    </Provider>
+  // </StyleContext.Provider>
   );
 }
 
