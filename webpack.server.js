@@ -1,7 +1,8 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const path = require('path');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const nodeExternals = require('webpack-node-externals');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
 module.exports = {
   entry: './server/index.js',
@@ -64,6 +65,9 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'static/css/[name]-[contenthash:8].css',
       chunkFilename: 'static/css/[name]-[contenthash:8].chunk.css',
+    }),
+    new WebpackManifestPlugin({
+      writeToFileEmit: true,
     }),
   ],
 };
